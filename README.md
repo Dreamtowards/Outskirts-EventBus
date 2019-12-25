@@ -102,6 +102,42 @@ Two: Test Message
 Test Message
 ```
 
-### Cancellment
+### Cancellable
+
+sometimes, we needs cancel the event. e.g prevent explosion event. normally, when a event been cancelled, that relative works will be stop, but not absolute, when a Event-Handler had "ignoreCancelled=true" property, that can handles already been cancelled event, event it can resume the event to cancelled=false state. for fixiblity, this is very a good thing, just like we can write a rough force shutdown computer program, but usually not to really do in actually.
+
+when you wants make you event can been cancel, you needs let your Event Class implements the Cancellable interface.
+
+```
+public static class TestEvent extends Event implements Cancellable { ... }
+```
+event only possible can be cancel which is implements(extends) Cancellable interface.
+
+#### write a event poster post() that supports cancellable
+
+```
+// sending files
+for (String filename : Arrays.asList("file1", "File2", "fileABC")) {
+    if (Events.EVENT_BUS.post(new TestEvent("posting file: " + filename))) {
+        continue;
+    }
+    sendFile(filename);
+}
+```
+when event finally is been cancelled, that post() will return true. so in this case, when the event been cancelled, that current filename's sendFile() will be jump over.
+
+#### Cancel the event
+
+after we implements Cancellable interface, we had 2 new method: isCancelled() and setCancelled(boolean). those are already had been implemented in Cancellable. we just needs directly to calls just ok.
+
+```
+event.setCancelled(true);
+```
+
+when the event had been cancelled, all subsequent Event-Handlers will not be call which `ignoreCancelled=false`. when last Event-Handler been called and the event are cancelled state, that post() will return true for jump over related operations/behavior. 
 
 ### Priority
+
+you can set every Event-Handler's priority, that is a int number, the more higher number that more precedence been call.
+
+in EventPriority.class, had some priority defaults, usually just uses those defaults is ok.
