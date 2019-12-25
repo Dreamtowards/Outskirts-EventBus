@@ -48,16 +48,16 @@ public class EventBus {
             CollectionUtils.insertionSort(handlers, Comparator.reverseOrder());
         }
     }
-    public <E extends Event> void register(Class<E> eventClass, Consumer<E> function, int priority, boolean ignoreCancelled) {
+    public final <E extends Event> void register(Class<E> eventClass, Consumer<E> function, int priority, boolean ignoreCancelled) {
         register(eventClass, function, priority, ignoreCancelled, null);
     }
-    public final <E extends Event> void register(Class<E> eventClass, Consumer<E> functionHandler) {
-        register(eventClass, functionHandler, EventHandler.DEFAULT_PRIORITY, EventHandler.DEFAULT_IGNORE_CANCELLED);
+    public final <E extends Event> void register(Class<E> eventClass, Consumer<E> function) {
+        register(eventClass, function, EventHandler.DEFAULT_PRIORITY, EventHandler.DEFAULT_IGNORE_CANCELLED);
     }
-    public final <E extends Event> void register(Consumer<E> functionHandler) {
+    public final <E extends Event> void register(Consumer<E> function) {
         // crazy powerful function..
-        Class eventClass = TypeResolver.resolveRawArguments(Consumer.class, functionHandler.getClass())[0];
-        register(eventClass, functionHandler, EventHandler.DEFAULT_PRIORITY, EventHandler.DEFAULT_IGNORE_CANCELLED);
+        Class eventClass = TypeResolver.resolveRawArguments(Consumer.class, function.getClass())[0];
+        register(eventClass, function, EventHandler.DEFAULT_PRIORITY, EventHandler.DEFAULT_IGNORE_CANCELLED);
     }
 
     // for supports static class/methods, that may have some problem about unnecessary complexity
