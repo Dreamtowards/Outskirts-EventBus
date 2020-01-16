@@ -9,11 +9,17 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EventHandler {
 
-    int DEFAULT_PRIORITY = EventPriority.NORMAL;
-    boolean DEFAULT_IGNORE_CANCELLED = false;
+    int DEF_PRIORITY = EventPriority.NORMAL;
+    boolean DEF_IGNORE_CANCELLED = false;
+    Class<?> DEF_SCHEDULER = Class.class;
 
-    int priority() default DEFAULT_PRIORITY;
+    int priority() default DEF_PRIORITY;
 
-    boolean ignoreCancelled() default DEFAULT_IGNORE_CANCELLED;
+    boolean ignoreCancelled() default DEF_IGNORE_CANCELLED;
+
+    /**
+     * which Class had { public static Scheduler getScheduler() } method.
+     */
+    Class<?> scheduler() default Class.class; // DEF_SCHEDULER
 
 }
